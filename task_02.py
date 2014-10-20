@@ -35,6 +35,7 @@ class Tire(object):
     """
     def __init__(self, miles=0):
         self.miles = miles
+        self.__maximum_miles = 500
 
     def add_miles(self, miles):
         """Increments the tire mileage by the specified miles.
@@ -43,6 +44,3 @@ class Tire(object):
             miles (integer): The number of miles to add to the tire.
         """
         self.miles += miles
-
-    def __maximum_miles(self):
-        self.__maximum_miles = 500
