@@ -3,5 +3,10 @@
 
 import time
 class Snapshot(object):
+
+    
     def __init__(self):
+        """Initializes the Snapshot
+        """
+        
         self.created = time.time()
