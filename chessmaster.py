@@ -1,23 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+import time
+
+
 class ChessPiece(object):
     """Creates a generic chess piece
     """
-    
-    import time
 
-
+    prefix = ""
     def __init__(self, position):
         """Initializes the chess piece
         """
         
         self.position = position
-        self.prefix = ""
         self.moves = []
-        self.is_legal_move = self.algebraic_to_numeric(position)
         excep = '`{}` is not a legal start position'
-        if self.is_legal_move is False:
+        if self.is_legal_move(self.position) is False:
             raise ValueError(excep.format(position))
 
 
@@ -28,44 +28,90 @@ class ChessPiece(object):
         letters = ['a','b','c','d','e','f','g','h']
         pos = ()
         for i, j in tile.split():
-            if i in letters and int(j) < 8:
+            if i in letters and int(j) <= 8:
                 pos = (letters.index(str(i)), int(j) - 1)
             else:
                 pos = None
         return pos
+
+    def is_legal_move(self, position):
+        if self.algebraic_to_numeric(position) is None:
+            legal = False
+        else:
+            legal = True
+        return legal
 
 
     def move(self, position):
         """Moves a piece
         """
         
-        import time
-        if self.is_legal_move is True:
+        if self.is_legal_move(position) is True:
             oldposition = self.position
             self.position = position
-            move = (oldposition, self.position, time.time())
+            move = (self.prefix + oldposition, self.prefix + self.position,\
+                    time.time())
             self.moves.append(move)
             statement = self.moves
-        else:statement = False
+        else:
+            move = False
         return move
 
 class Rook(ChessPiece):
     """Creates a rook
     """
 
-
-    def __init__(self, position):
-        """Initializes the rook
-        """
+    prefix = "R"
         
-        self.prefix = "R"
 
     def is_legal_move(self, position):
-        self.newpos = position
-        if self.is_legal_move is True:
-            if self.newpos.split()[1] != self.position.split()[1] or\
-               self.newpos.split()[0] != self.position.split()[0]:
-                self.is_legal_move is False
+        """Over rides ChessPiece.is_legal_move
+        """
+        if ChessPiece(position).is_legal_move(position) is True:
+            for i, j in position.split():
+                for a, b in self.position.split():
+                    print a, b, i, j
+                    if j != b and i != a:
+                        legal = False
+                    else:
+                        legal = True
+        else:
+            legal = False
+        return legal
+
+class Bishop(ChessPiece):
+    """ Creates a bishop
+    """
+
+    prefix = "B"
+
+    def is_legal_move(self, position):
+        """Over rides ChessPiece.is_legal_move
+        """
+        
+        if ChessPiece(position).is_legal_move(position) is True:
+            pos = ChessPiece(self.position).algebraic_to_numeric(self.position)
+            newpos = ChessPiece(position).algebraic_to_numeric(position)
+            legal = True if (abs(pos[0] - newpos[0]) \
+                             == abs(pos[1] - newpos[1])) else False
+            return legal
+
+class King(ChessPiece):
+    """ Creates the King
+    """
+
+    prefix = "K"
+
+    def is_legal_move(self, position):
+        """Over rides ChessPiece.is_legal_move
+        """
+        
+        if ChessPiece(position).is_legal_move(position) is True:
+            pos = ChessPiece(self.position).algebraic_to_numeric(self.position)
+            newpos = ChessPiece(position).algebraic_to_numeric(position)
+            legal = True if abs(pos[0] - newpos[0] <= 1) and\
+                    abs(pos[1] - newpos[1]) <= 1 else False
+            return legal
             
 class ChessMatch(object):
     """Creates a game of chess
