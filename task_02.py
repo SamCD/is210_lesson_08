@@ -11,6 +11,7 @@ class Car(object):
 
     Attributes:
        color (string): The color of the car.
+       tires (list): The tires on the car
     """
 
 
@@ -21,12 +22,9 @@ class Car(object):
         
         self.color = color
         self.tires = tires
-        if tires == None:
-            tires = []
-            self.tires.append(Tire())
-            self.tires.append(Tire())
-            self.tires.append(Tire())
-            self.tires.append(Tire())
+        if tires is None:
+            tires = [Tire(), Tire(), Tire(), Tire()]
+        self.tires = tires
 
 
 class Tire(object):
@@ -37,8 +35,9 @@ class Tire(object):
 
     Attributes:
        miles (integer): The number of miles on the Tire.
+       __maximum_miles (integer): The maximum number of miles on the Tire.
     """
-
+    __maximum_miles = 500
     
     def __init__(self, miles=0):
 
@@ -46,7 +45,6 @@ class Tire(object):
         """
         
         self.miles = miles
-        self.__maximum_miles = 500
 
 
     def add_miles(self, miles):
